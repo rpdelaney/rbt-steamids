@@ -47,7 +47,9 @@ def main():
                     {
                         "name": player_name,
                         "steamid_64": steamid64,
-                        "steamid": steamid
+                        "steamid": sid(steamid64).as_steam2,
+                        "valid": sid.is_valid(sid(steamid64)),
+                        "url": sid(steamid64).community_url
                     }
                 )
 
