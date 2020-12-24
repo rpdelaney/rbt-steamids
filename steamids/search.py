@@ -41,8 +41,7 @@ def main():
                     if word.strip()
                 ]
                 player_name = words[0]
-                steamid64 = words[1][1:-1]
-                steamid = sid(steamid64).as_steam2
+                steamid64 = words[1]
 
                 team["players"].append(
                     {
