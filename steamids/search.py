@@ -11,6 +11,7 @@ bracketed = re.compile("\\[.+\\]")
 def main():
     team = {}
     teams = []
+
     with open("data.txt") as f:
         for line in f:
             if line[0] == "[":
@@ -20,8 +21,8 @@ def main():
                 team = {}
 
                 words = [
-                    word.strip() for word
-                    in re.split(r"[\[\]\n]+", line)
+                    word.strip()
+                    for word in re.split(r"[\[\]\n]+", line)
                     if word.strip()
                 ]
                 team_name = words[0]
@@ -30,14 +31,14 @@ def main():
                 team = {
                     "name": team_name,
                     "region": team_region,
-                    "players": []
+                    "players": [],
                 }
 
             if line[0] == "-":
                 # player info
                 words = [
-                    word.strip() for word
-                    in re.split(r"[\[\]\n]+", line.strip("-"))
+                    word.strip()
+                    for word in re.split(r"[\[\]\n]+", line.strip("-"))
                     if word.strip()
                 ]
                 player_name = words[0]
@@ -49,11 +50,11 @@ def main():
                         "steamid_64": steamid64,
                         "steamid": sid(steamid64).as_steam2,
                         "valid": sid.is_valid(sid(steamid64)),
-                        "url": sid(steamid64).community_url
+                        "url": sid(steamid64).community_url,
                     }
                 )
-
     teams.append(team)
+
     print(json.dumps(teams, default=str))
 
 
