@@ -13,9 +13,7 @@ def parse_team(line) -> Dict[str, str]:
     # this is a new team
 
     words = [
-        word.strip()
-        for word in re.split(r"[\[\]\n]+", line)
-        if word.strip()
+        word.strip() for word in re.split(r"[\[\]\n]+", line) if word.strip()
     ]
     team_name = words[0]
     team_region = words[1]
