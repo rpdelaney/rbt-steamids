@@ -3,9 +3,28 @@
 
 import re
 from steam.steamid import SteamID as sid
+from typing import Dict
 import json
 
 bracketed = re.compile("\\[.+\\]")
+
+
+def parse_team(line) -> Dict[str, str]:
+    # this is a new team
+
+    words = [
+        word.strip()
+        for word in re.split(r"[\[\]\n]+", line)
+        if word.strip()
+    ]
+    team_name = words[0]
+    team_region = words[1]
+
+    return {
+        "name": team_name,
+        "region": team_region,
+        "players": [],
+    }
 
 
 def main():
@@ -18,21 +37,7 @@ def main():
                 # this is a new team
                 if team:
                     teams.append(team)
-                team = {}
-
-                words = [
-                    word.strip()
-                    for word in re.split(r"[\[\]\n]+", line)
-                    if word.strip()
-                ]
-                team_name = words[0]
-                team_region = words[1]
-
-                team = {
-                    "name": team_name,
-                    "region": team_region,
-                    "players": [],
-                }
+                team = parse_team(line)
 
             if line[0] == "-":
                 # player info
