@@ -53,12 +53,10 @@ def main():
     with open("data.txt") as f:
         for line in f:
             if line[0] == "[":
-                # this is a new team
                 if team:
                     teams.append(team)
                 team = parse_team(line)
-
-            if line[0] == "-":
+            elif line[0] == "-":
                 team["players"].append(parse_player(line))
 
     teams.append(team)
