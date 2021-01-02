@@ -40,10 +40,10 @@ def parse_player(line) -> Dict[str, Union[str, bool]]:
 
     return {
         "name": player_name,
+        "url": sid(steamid64).community_url,
         "steamid_64": steamid64,
         "steamid": sid(steamid64).as_steam2,
-        "valid": sid.is_valid(sid(steamid64)),
-        "url": sid(steamid64).community_url,
+        "valid_steamid": sid.is_valid(sid(steamid64)),
     }
 
 
