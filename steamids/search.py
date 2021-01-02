@@ -33,7 +33,10 @@ def parse_player(line) -> Dict[str, Union[str, bool]]:
         if word.strip()
     ]
     player_name = words[0]
-    steamid64 = words[1]
+    try:
+        steamid64 = words[1]
+    except IndexError:
+        steamid64 = "0"
 
     return {
         "name": player_name,
