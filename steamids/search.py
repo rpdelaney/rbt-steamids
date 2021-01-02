@@ -3,13 +3,51 @@
 
 import re
 from steam.steamid import SteamID as sid
-from typing import Dict, Union
+from typing import Dict, Union, List, Generator
 import json
 
 bracketed = re.compile("\\[.+\\]")
 
 
-def parse_team(line) -> Dict[str, str]:
+class Player:
+    def __init__(self, name, steamid_64):
+        self.name = name
+        self.steamid_64 = steamid_64
+
+    @property
+    def steamid(self):
+        return sid(self.steamid_64).as_steam2
+
+    @property
+    def valid_steamid(self):
+        return sid.is_valid(sid(self.steamid_64))
+
+
+class Team:
+    def __init__(
+        self, name: str = "", region: str = "", players: List[Player] = []
+    ):
+        self.name = name
+        self.region = region
+        self.players: List[Player] = players
+
+    @property
+    def size(self):
+        return len(self.players)
+
+    @property
+    def valid_size(self):
+        return 4 <= self.size <= 6
+
+    def __iter__(self) -> Generator:
+        yield "name", self.name
+        yield "region", self.region
+        yield "players", self.players
+        yield "size", self.size
+        yield "valid_size", self.valid_size
+
+
+def parse_team(line: str) -> Team:
     # this is a new team
 
     words = [
@@ -18,16 +56,7 @@ def parse_team(line) -> Dict[str, str]:
     team_name = words[0]
     team_region = words[1]
 
-    return {
-        "name": team_name,
-        "region": team_region,
-        "players": [],
-    }
-
-
-def add_team_metadata(team: Dict[str, str]) -> None:
-    team["size"] = len(team["players"])
-    team["valid_size"] = 4 <= team["size"] <= 6
+    return Team(name=team_name, region=team_region, players=[])
 
 
 def parse_player(line) -> Dict[str, Union[str, bool]]:
@@ -53,23 +82,21 @@ def parse_player(line) -> Dict[str, Union[str, bool]]:
 
 
 def main():
-    team = {}
+    this_team = {}
     teams = []
 
     with open("data.txt") as f:
         for line in f:
             if line[0] == "[":
-                if team:
-                    add_team_metadata(team)
-                    teams.append(team)
-                team = parse_team(line)
+                if this_team:
+                    teams.append(this_team)
+                this_team = parse_team(line)
             elif line[0] == "-":
-                team["players"].append(parse_player(line))
+                this_team.players.append(parse_player(line))
 
-    add_team_metadata(team)
-    teams.append(team)
+    teams.append(this_team)
 
-    print(json.dumps(teams, default=str))
+    print(json.dumps(teams, default=dict))
 
 
 if __name__ == "__main__":
