@@ -11,6 +11,7 @@ bpython = "^0.20.1"
 black = "^20.8b1"
 flake8 = "^3.8.4"
 pudb = "^2020.1"
+isort = "^5.6.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
