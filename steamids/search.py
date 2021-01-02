@@ -25,6 +25,11 @@ def parse_team(line) -> Dict[str, str]:
     }
 
 
+def add_team_metadata(team: Dict[str, str]) -> None:
+    team["size"] = len(team["players"])
+    team["valid_size"] = 4 <= team["size"] <= 6
+
+
 def parse_player(line) -> Dict[str, Union[str, bool]]:
     # player info
     words = [
@@ -55,11 +60,13 @@ def main():
         for line in f:
             if line[0] == "[":
                 if team:
+                    add_team_metadata(team)
                     teams.append(team)
                 team = parse_team(line)
             elif line[0] == "-":
                 team["players"].append(parse_player(line))
 
+    add_team_metadata(team)
     teams.append(team)
 
     print(json.dumps(teams, default=str))
