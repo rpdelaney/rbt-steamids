@@ -22,6 +22,17 @@ class Player:
     def valid_steamid(self):
         return sid.is_valid(sid(self.steamid_64))
 
+    @property
+    def url(self):
+        return sid(self.steamid_64).community_url
+
+    def __iter__(self) -> Generator:
+        yield "name", self.name
+        yield "steamid64", self.steamid_64
+        yield "steamid", self.steamid
+        yield "url", self.url
+        yield "valid_steamid", self.valid_steamid
+
 
 class Team:
     def __init__(
@@ -59,7 +70,7 @@ def parse_team(line: str) -> Team:
     return Team(name=team_name, region=team_region, players=[])
 
 
-def parse_player(line) -> Dict[str, Union[str, bool]]:
+def parse_player(line) -> Player:
     # player info
     words = [
         word.strip()
@@ -68,17 +79,11 @@ def parse_player(line) -> Dict[str, Union[str, bool]]:
     ]
     player_name = words[0]
     try:
-        steamid64 = words[1]
+        steamid_64 = words[1]
     except IndexError:
-        steamid64 = "0"
+        steamid_64 = "0"
 
-    return {
-        "name": player_name,
-        "url": sid(steamid64).community_url,
-        "steamid_64": steamid64,
-        "steamid": sid(steamid64).as_steam2,
-        "valid_steamid": sid.is_valid(sid(steamid64)),
-    }
+    return Player(name=player_name, steamid_64=steamid_64)
 
 
 def main():
