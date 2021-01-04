@@ -8,6 +8,9 @@ import json
 
 bracketed = re.compile("\\[.+\\]")
 
+with open("bans.txt") as f:
+    bans = [line.strip("\n") for line in f]
+
 
 class Player:
     def __init__(self, name, steamid_64):
@@ -23,6 +26,10 @@ class Player:
         return sid.is_valid(sid(self.steamid_64))
 
     @property
+    def is_banned(self):
+        return self.steamid in bans
+
+    @property
     def url(self):
         return sid(self.steamid_64).community_url
 
@@ -30,8 +37,9 @@ class Player:
         yield "name", self.name
         yield "steamid64", self.steamid_64
         yield "steamid", self.steamid
-        yield "url", self.url
         yield "valid_steamid", self.valid_steamid
+        yield "is_banned", self.is_banned
+        yield "url", self.url
 
 
 class Team:
