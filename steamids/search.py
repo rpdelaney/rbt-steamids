@@ -3,10 +3,8 @@
 
 import re
 from steam.steamid import SteamID as sid
-from typing import Dict, Union, List, Generator
+from typing import List, Generator
 import json
-
-bracketed = re.compile("\\[.+\\]")
 
 with open("bans.txt") as f:
     bans = [line.strip("\n") for line in f]
