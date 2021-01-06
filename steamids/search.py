@@ -19,11 +19,17 @@ class Player:
 
     @property
     def steamid(self):
-        return sid(self.steamid_64).as_steam2
+        try:
+            return sid(self.steamid_64).as_steam2
+        except ValueError:
+            return 0
 
     @property
     def valid_steamid(self):
-        return sid.is_valid(sid(self.steamid_64))
+        try:
+            return sid.is_valid(sid(self.steamid_64))
+        except ValueError:
+            return False
 
     @property
     def is_banned(self):
@@ -31,7 +37,10 @@ class Player:
 
     @property
     def url(self):
-        return sid(self.steamid_64).community_url
+        try:
+            return sid(self.steamid_64).community_url
+        except ValueError:
+            return ""
 
     def __iter__(self) -> Generator:
         yield "name", self.name
