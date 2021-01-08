@@ -5,6 +5,7 @@ import re
 from steam.steamid import SteamID as sid
 from typing import List, Generator
 import json
+import sys
 
 with open("bans.txt") as f:
     bans = [line.strip("\n") for line in f]
@@ -102,7 +103,7 @@ def parse_player(line) -> Player:
 
 
 def main():
-    this_team = {}
+    this_team = Team()
     teams = []
 
     with open("data.txt") as f:
@@ -115,8 +116,23 @@ def main():
                 this_player = parse_player(line)
                 if not this_player.is_banned:
                     this_team.players.append(this_player)
+                else:
+                    print(
+                        "Omitting banned player: {} ({})".format(
+                            this_player.name, this_player.steamid
+                        ),
+                        file=sys.stderr,
+                    )
 
-    teams.append(this_team)
+    if this_team.valid_size:
+        teams.append(this_team)
+    else:
+        print(
+            "Omitting team with invalid size: {} (size: {})".format(
+                this_team.name, this_team.size
+            ),
+            file=sys.stderr,
+        )
 
     print(json.dumps(teams, default=dict))
 
