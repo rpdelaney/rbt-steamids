@@ -112,7 +112,9 @@ def main():
                     teams.append(this_team)
                 this_team = parse_team(line)
             elif line[0] == "-":
-                this_team.players.append(parse_player(line))
+                this_player = parse_player(line)
+                if not this_player.is_banned:
+                    this_team.players.append(this_player)
 
     teams.append(this_team)
 
