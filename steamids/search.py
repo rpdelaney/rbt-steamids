@@ -114,15 +114,22 @@ def main():
                 this_team = parse_team(line)
             elif line[0] == "-":
                 this_player = parse_player(line)
-                if not this_player.is_banned:
-                    this_team.players.append(this_player)
-                else:
+                if this_player.is_banned:
                     print(
                         "Omitting banned player: {} ({})".format(
                             this_player.name, this_player.steamid
                         ),
                         file=sys.stderr,
                     )
+                elif not this_player.valid_steamid:
+                    print(
+                        "Omitting invalid steamid: {} ({})".format(
+                            this_player.name, this_player.steamid
+                        ),
+                        file=sys.stderr,
+                    )
+                else:
+                    this_team.players.append(this_player)
 
     if this_team.valid_size:
         teams.append(this_team)
