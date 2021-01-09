@@ -141,6 +141,23 @@ def main():
             file=sys.stderr,
         )
 
+    # check for duplicate registrations
+    all_steamids = [
+        [player.steamid_64 for player in team.players] for team in teams
+    ]
+    all_steamids = [item for sublist in all_steamids for item in sublist]
+
+    for team in teams:
+        for player in team.players:
+            reg_count = all_steamids.count(player.steamid_64)
+            if reg_count > 1:
+                print(
+                    "SteamID {} ({}) is registered {} times!".format(
+                        player.steamid_64, player.name, reg_count
+                    ),
+                    file=sys.stderr,
+                )
+
     print(json.dumps(teams, default=dict))
 
 
