@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 #
 
-import re
-from steam.steamid import SteamID as sid
-from typing import List, Generator
 import json
+import re
 import sys
+from typing import Generator, List
+
+from steam.steamid import SteamID as sid
 
 with open("bans.txt") as f:
     bans = [line.strip("\n") for line in f]
