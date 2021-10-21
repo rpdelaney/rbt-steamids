@@ -6,7 +6,7 @@ import re
 import sys
 from typing import Generator, List
 
-from steam.steamid import SteamID as sid
+from steam.steamid import SteamID as sid  # type: ignore
 
 with open("bans.txt") as f:
     bans = [line.strip("\n") for line in f]
