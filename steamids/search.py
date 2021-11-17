@@ -4,45 +4,45 @@
 import json
 import re
 import sys
-from typing import Generator, List
+from typing import Generator, List, Tuple, Union
 
-from steam.steamid import SteamID as sid  # type: ignore
+from steam.steamid import SteamID as sid
 
 with open("bans.txt") as f:
     bans = [line.strip("\n") for line in f]
 
 
 class Player:
-    def __init__(self, name, steamid_64):
+    def __init__(self, name: str, steamid_64: str) -> None:
         self.name = name
         self.steamid_64 = steamid_64
 
     @property
-    def steamid(self):
+    def steamid(self) -> str:
         try:
-            return sid(self.steamid_64).as_steam2
+            return str(sid(self.steamid_64).as_steam2)
         except ValueError:
-            return 0
+            return ""
 
     @property
-    def valid_steamid(self):
+    def valid_steamid(self) -> bool:
         try:
-            return sid.is_valid(sid(self.steamid_64))
+            return bool(sid.is_valid(sid(self.steamid_64)))
         except ValueError:
             return False
 
     @property
-    def is_banned(self):
+    def is_banned(self) -> bool:
         return self.steamid in bans
 
     @property
-    def url(self):
+    def url(self) -> str:
         try:
-            return sid(self.steamid_64).community_url
+            return str(sid(self.steamid_64).community_url)
         except ValueError:
             return ""
 
-    def __iter__(self) -> Generator:
+    def __iter__(self) -> Generator[Tuple[str, Union[int, str]], None, None]:
         yield "name", self.name
         yield "steamid64", self.steamid_64
         yield "steamid", self.steamid
@@ -54,20 +54,22 @@ class Player:
 class Team:
     def __init__(
         self, name: str = "", region: str = "", players: List[Player] = []
-    ):
+    ) -> None:
         self.name = name
         self.region = region
         self.players: List[Player] = players
 
     @property
-    def size(self):
+    def size(self) -> int:
         return len(self.players)
 
     @property
-    def valid_size(self):
+    def valid_size(self) -> bool:
         return 4 <= self.size <= 6
 
-    def __iter__(self) -> Generator:
+    def __iter__(
+        self,
+    ) -> Generator[Tuple[str, Union[int, str, List[Player]]], None, None]:
         yield "name", self.name
         yield "region", self.region
         yield "players", self.players
@@ -87,7 +89,7 @@ def parse_team(line: str) -> Team:
     return Team(name=team_name, region=team_region, players=[])
 
 
-def parse_player(line) -> Player:
+def parse_player(line: str) -> Player:
     # player info
     words = [
         word.strip()
@@ -103,10 +105,12 @@ def parse_player(line) -> Player:
     return Player(name=player_name, steamid_64=steamid_64)
 
 
-def main():
+def main() -> None:
+    """
+    This is so gross lol. I'll fix it later
+    """
     this_team = Team()
     teams = []
-
     with open("data.txt") as f:
         for line in f:
             if line[0] == "[":
