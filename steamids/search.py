@@ -121,16 +121,12 @@ def main() -> None:
                 this_player = parse_player(line)
                 if this_player.is_banned:
                     print(
-                        "Omitting banned player: {} ({})".format(
-                            this_player.name, this_player.steamid
-                        ),
+                        f"banned player: {this_player.name}",
                         file=sys.stderr,
                     )
                 elif not this_player.valid_steamid:
                     print(
-                        "Omitting invalid steamid: {} ({})".format(
-                            this_player.name, this_player.steamid
-                        ),
+                        f"invalid steamid: {this_player.name}",
                         file=sys.stderr,
                     )
                 else:
