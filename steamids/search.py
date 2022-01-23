@@ -121,7 +121,7 @@ def main() -> None:
                 this_player = parse_player(line)
                 if this_player.is_banned:
                     print(
-                        f"banned player: {this_player.name}",
+                        f"banned player: {this_player.name} {this_player.steamid}",
                         file=sys.stderr,
                     )
                 elif not this_player.valid_steamid:
@@ -153,8 +153,8 @@ def main() -> None:
             reg_count = all_steamids.count(player.steamid_64)
             if reg_count > 1:
                 print(
-                    "SteamID {} ({}) is registered {} times!".format(
-                        player.steamid_64, player.name, reg_count
+                    "SteamID {} ({}) is registered {} times! Team: {}".format(
+                        player.steamid_64, player.name, reg_count, team.name
                     ),
                     file=sys.stderr,
                 )
