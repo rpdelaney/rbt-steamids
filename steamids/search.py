@@ -108,20 +108,31 @@ def parse_player(line: str) -> Player:
 def main() -> None:
     """
     This is so gross lol. I'll fix it later
+
+    Instead of splitting everything on ['s, which is fragile and
+    sometimes doesn't emit errors when it should, use a regex and
+    emit an error for anything that doesn't match
     """
     this_team = Team()
     teams = []
     with open("data.txt") as f:
         for line in f:
-            if line[0] == "[":
+            line = line.strip()
+            try:
+                first_char = line[0]
+            except IndexError:
+                first_char = ""
+
+            if first_char == "[":
                 if this_team:
                     teams.append(this_team)
                 this_team = parse_team(line)
-            elif line[0] == "-":
+            elif first_char == "-":
                 this_player = parse_player(line)
                 if this_player.is_banned:
                     print(
-                        f"banned player: {this_player.name} {this_player.steamid}",
+                        f"banned player: {this_player.name}"
+                        f" {this_player.steamid}",
                         file=sys.stderr,
                     )
                 elif not this_player.valid_steamid:
